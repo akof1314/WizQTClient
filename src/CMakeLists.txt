@@ -1,343 +1,395 @@
 project(WizNote)
 
-add_subdirectory(plugins)
+add_subdirectory(test)
 
 set(wiznote_SOURCES_MAC
-    mac/wizSearchWidget.mm
-    mac/wizmachelper.mm
-    mac/wizmactoolbar.mm
-    mac/wizmactoolbardelegate.mm
-    mac/wizmacactionhelper.cpp
-    mac/wizUserInfoWidgetBaseMac.mm
-    mac/wizUserInfoWidgetBaseMac_mm.cpp
-    utils/notify.mm
+    mac/WizSearchWidget.mm
+    mac/WizMacHelper.mm
+    mac/WizMacToolBar.mm
+    mac/WizMacToolBarDelegate.mm
+    mac/WizMacActionHelper.cpp
+    mac/WizUserInfoWidgetBaseMac.mm
+    mac/WizUserInfoWidgetBaseMac_mm.cpp
+    utils/WizNotify.mm
+    mac/WizIAPHelper.mm
+    mac/rmstore/RMAppReceipt.mm
+    mac/rmstore/RMStoreAppReceiptVerificator.mm
+    mac/WizNotificationCenter.mm
+    widgets/WizIAPDialog.cpp
+    mac/DTWebArchive.m
 )
 
 set(wiznote_HEADERS_MAC
-    mac/wizmachelper.h
-    mac/wizmachelper_mm.h
-    mac/wizSearchWidget_mm.h
-    mac/wizmactoolbar.h
-    mac/wizmactoolbardelegate.h
-    mac/wizmacactionhelper.h
-    mac/wizUserInfoWidgetBaseMac_mm.h
+    mac/WizMacHelper.h
+    mac/WizMacHelper_mm.h
+    mac/WizSearchWidget_mm.h
+    mac/WizMacToolBar.h
+    mac/WizMacToolBarDelegate.h
+    mac/WizMacActionHelper.h
+    mac/WizUserInfoWidgetBaseMac_mm.h
+    mac/WizIAPHelper.h
+    mac/rmstore/RMAppReceipt.h
+    mac/rmstore/RMStoreAppReceiptVerificator.h
+    mac/WizNotificationCenter.h
+    widgets/WizIAPDialog.h
+    mac/DTWebArchive.h
+)
+
+
+set(wiznote_FORMS_MAC
+    ui/WizIAPDialog.ui
 )
 
 set(wiznote_SOURCES
-    share/wizzip.cpp
-    share/wizqthelper.cpp
-    share/wizmisc.cpp
+    utils/WizLogger.cpp
+    utils/WizMisc.cpp
+    utils/WizPinyin.cpp
+    utils/WizNotify.cpp
+    share/WizZip.cpp
+    share/WizQtHelper.cpp
+    share/WizMisc.cpp
     share/sqlite3.c
     share/cppsqlite3.cpp
-    share/wizobject.cpp
-    share/wizkmcore.cpp
-    share/wizxml.cpp
-    share/wizxmlrpc.cpp
-    sync/wizXmlRpcServer.cpp
-    #share/wizapi.cpp
-    share/wizDatabase.cpp
-    share/wizDatabaseManager.cpp
-    #share/wizverifyaccount.cpp
-    share/wizsettings.cpp
-    share/wizui.cpp
-    share/wizmd5.cpp
-    share/wizhtml2zip.cpp
-    share/wizwin32helper.cpp
-    share/wizdrawtexthelper.cpp
-    share/wizuihelper.cpp
-    #share/wizcreateaccount.cpp
-    share/wizcommonui.cpp
-    share/wizanimateaction.cpp
-    share/wizpopupwidget.cpp
-    share/wizmultilinelistwidget.cpp
-    share/wizfileiconprovider.cpp
-    share/wizwindowshelper.cpp
-    share/wizIndexBase.cpp
-    share/wizIndex.cpp
-    share/wizthumbindex.cpp
-    share/wizenc.cpp
-    share/wizziwreader.cpp
-    html/wizhtmlreader.cpp
-    html/wizhtmlcollector.cpp
-    main.cpp
-    share/wizClucene.cpp
-    share/wizSearchIndexer.cpp
-    widgets/wizScrollBar.cpp
-    sync/token.cpp
-    sync/apientry.cpp
-    share/wizObjectDataDownloader.cpp
-    #share/wizUserAvatar.cpp
-    sync/avatar.cpp
-    sync/wizkmxmlrpc.cpp
-    sync/wizkmsync.cpp
-    sync/asyncapi.cpp
-    #sync/wizCloudPool.cpp
-    sync/avataruploader.cpp
-    widgets/wizUserInfoWidget.cpp
-    widgets/wizUserInfoWidgetBase.cpp
-    widgets/wizSegmentedButton.cpp
-    utils/stylehelper.cpp
-    utils/pathresolve.cpp
-    share/wiztitlebar.cpp
-    share/wizshadoweffect.cpp
-
-    #coreplugin.cpp
-    wizCategoryView.cpp
-    wizCategoryViewItem.cpp
-    wizDocumentListView.cpp
-    wizDocumentListViewItem.cpp
-    wizDocumentView.cpp
-    wizDocumentWebView.cpp
-    wizDocumentWebEngine.cpp
-    wizactions.cpp
-    wiznotestyle.cpp
-    wizLineInputDialog.cpp
-    wizdocumenthistory.cpp
-    wizattachmentlistwidget.cpp
-    wiztaglistwidget.cpp
-    wizconsoledialog.cpp
-    wizpreferencedialog.cpp
-    wizproxydialog.cpp
-    wizcreateaccountdialog.cpp
-    wizmainwindow.cpp
-    #icore.cpp
-    notecomments.cpp
-    cellbutton.cpp
-    titlebar.cpp
-    infobar.cpp
-    notifybar.cpp
-    titleedit.cpp
-    sync/sync.cpp
-    #wizupdaterprogressdialog.cpp
-    wizstatusbar.cpp
-    wizupgradenotifydialog.cpp
-    #wizcertmanager.cpp
-    wizusercipherform.cpp
-    wiznoteinfoform.cpp
-    wizSearchWidget.cpp
-    wizEditorInsertLinkForm.cpp
-    wizUpgrade.cpp
-    wizButton.cpp
-    wizEditorToolBar.cpp
-    wizEditorInsertTableForm.cpp
-    wizFileReader.cpp
-    wizFolderSelector.cpp
-    wizProgressDialog.cpp
-    wizFolderView.cpp
-    wizDocumentSelectionView.cpp
-    wizDocumentTransitionView.cpp
-    wizPopupButton.cpp
-    wizWebSettingsDialog.cpp
-    wizUserVerifyDialog.cpp
-    plugindialog.cpp
-    utils/logger.cpp
-    utils/misc.cpp
-    utils/pinyin.cpp
-    utils/notify.cpp
-    messagelistview.cpp
-    thumbcache.cpp
-    messagecompleter.cpp
-    widgets/wizImageButton.cpp
-    wizDocumentEditStatus.cpp
-    wizLoginDialog.cpp
-    share/wizFileMonitor.cpp
-    wizSearchReplaceWidget.cpp
+    share/WizObject.cpp
+    share/WizKMCore.cpp
+    share/WizGlobal.cpp
+    share/WizDatabase.cpp
+    share/WizDatabaseManager.cpp
+    share/WizSettings.cpp
+    share/WizUI.cpp
+    share/WizMd5.cpp
+    share/WizHtml2Zip.cpp
+    share/WizWin32Helper.cpp
+    share/WizDrawTextHelper.cpp
+    share/WizUIHelper.cpp
+    share/WizUIBase.cpp
+    share/WizCommonUI.cpp
+    share/WizAnimateAction.cpp
+    share/WizPopupWidget.cpp
+    share/WizMultiLineListWidget.cpp
+    share/WizFileIconProvider.cpp
+    share/WizWindowsHelper.cpp
+    share/WizIndexBase.cpp
+    share/WizIndex.cpp
+    share/WizThumbIndex.cpp
+    share/WizEnc.cpp
+    share/WizZiwReader.cpp
+    html/WizHtmlReader.cpp
+    html/WizHtmlCollector.cpp    
+    share/WizSearch.cpp
+    widgets/WizScrollBar.cpp
+    sync/WizToken.cpp
+    sync/WizApiEntry.cpp
+    share/WizObjectDataDownloader.cpp
+    sync/WizAvatarHost.cpp
+    sync/WizKMServer.cpp
+    sync/WizKMSync.cpp
+    sync/WizAsyncApi.cpp
+    sync/WizAvatarUploader.cpp
+    sync/WizJSONServerBase.cpp
+    sync/WizSync.cpp
+    widgets/WizUserInfoWidget.cpp
+    widgets/WizUserInfoWidgetBase.cpp
+    widgets/WizSegmentedButton.cpp
+    utils/WizStyleHelper.cpp
+    utils/WizPathResolve.cpp
+    share/WizWindowTitleBar.cpp
+    share/WizShadowEffect.cpp
+    widgets/WizTagBar.cpp
+    widgets/WizTrayIcon.cpp
+    share/WizEventLoop.cpp
+    share/WizObjectOperator.cpp
+    widgets/WizAboutDialog.cpp
+    widgets/WizLocalProgressWebView.cpp
+    widgets/WizCrashReportDialog.cpp
+    widgets/WizCustomToolBar.cpp
+    widgets/WizTipsWidget.cpp
+    widgets/WizSingleDocumentView.cpp
+    widgets/WizShareLinkDialog.cpp
+    share/WizAnalyzer.cpp
+    share/WizTranslater.cpp
+    widgets/WizAdvancedSearchDialog.cpp
+    share/WizUdpClient.cpp
+    share/WizMessageBox.cpp
+    share/WizFileMonitor.cpp
+    share/WizLockedFile.cpp
+    share/WizLocalPeer.cpp
+    share/WizSingleApplication.cpp
+    widgets/WizImageButton.cpp
     widgets/WizCodeEditorDialog.cpp
-    wizDocTemplateDialog.cpp
-    wizMobileFileReceiver.cpp
-    widgets/wizFramelessWebDialog.cpp
-    share/wizLockedFile.cpp
-    share/wizLocalPeer.cpp
-    share/wizSingleApplication.cpp
-    share/wizRtfReader.cpp
-    widgets/wizScreenShotWidget.cpp
-    widgets/wizVerificationCodeDialog.cpp
-    share/rtf2html/fmt_opts.cpp
-    share/rtf2html/rtf_keyword.cpp
-    share/rtf2html/rtf_table.cpp
-    share/rtf2html/rtf2html.cpp
-    widgets/wizEmailShareDialog.cpp
-    share/websocketclientwrapper.cpp
-    share/websockettransport.cpp
-    wizWebEngineInjectObject.cpp
-    widgets/wizMarkdownTemplateDialog.cpp
-    widgets/wizShareLinkDialog.cpp
-    share/wizAnalyzer.cpp
-    share/wizTranslater.cpp
+    widgets/WizFramelessWebDialog.cpp
+    widgets/WizScreenShotWidget.cpp
+    widgets/WizVerificationCodeDialog.cpp
+    widgets/WizEmailShareDialog.cpp
+    widgets/WizTemplatePurchaseDialog.cpp
+    widgets/WizExecutingActionDialog.cpp
+    share/WebSocketClientWrapper.cpp
+    share/WebSocketTransport.cpp
+    share/WizWebEngineView.cpp
+    widgets/WizTableSelector.cpp
+    widgets/WizUserServiceExprDialog.cpp
+
+    share/jsoncpp/jsoncpp.cpp
+    share/WizRequest.cpp
+
+    WizCategoryView.cpp
+    WizCategoryViewItem.cpp
+    WizDocumentListView.cpp
+    WizDocumentListViewItem.cpp
+    WizDocumentView.cpp
+    WizDocumentWebView.cpp
+    WizActions.cpp
+    WizNoteStyle.cpp
+    WizLineInputDialog.cpp
+    WizDocumentHistory.cpp
+    WizAttachmentListWidget.cpp
+    WizTagListWidget.cpp
+    WizConsoleDialog.cpp
+    WizPreferenceDialog.cpp
+    WizProxyDialog.cpp
+    WizCreateAccountDialog.cpp
+    WizMainWindow.cpp
+    WizCellButton.cpp
+    WizTitleBar.cpp
+    WizInfoBar.cpp
+    WizNotifyBar.cpp
+    WizTitleEdit.cpp
+    WizStatusBar.cpp
+    WizUpgradeNotifyDialog.cpp
+    WizUserCipherForm.cpp
+    WizNoteInfoForm.cpp
+    WizSearchWidget.cpp
+    WizEditorInsertLinkForm.cpp
+    WizUpgrade.cpp
+    WizButton.cpp
+    WizEditorToolBar.cpp
+    WizEditorInsertTableForm.cpp
+    WizFileImporter.cpp
+    WizFolderSelector.cpp
+    WizProgressDialog.cpp
+    WizFolderView.cpp
+    WizDocumentSelectionView.cpp
+    WizDocumentTransitionView.cpp
+    WizPopupButton.cpp
+    WizWebSettingsDialog.cpp
+    WizUserVerifyDialog.cpp
+    WizMessageListView.cpp
+    WizThumbCache.cpp
+    WizMessageCompleter.cpp
+    WizDocumentEditStatus.cpp
+    WizLoginDialog.cpp
+    WizSearchReplaceWidget.cpp
+    WizDocTemplateDialog.cpp
+    WizMobileFileReceiver.cpp
+    WizWebEngineInjectObject.cpp
+    WizCombineNotesDialog.cpp
+    WizSvgEditorDialog.cpp
+
+    WizOEMSettings.cpp    
+    mac/WizSearchWidget_mm.cpp
+    core/WizAccountManager.cpp
+    core/WizCommentManager.cpp
+    core/WizNoteManager.cpp
+    share/WizThreads.cpp
+    WizPositionDelegate.cpp
+    main.cpp
+    WizInitBizCertDialog.cpp
+    share/WizDocumentStyle.cpp
+
+    WizPlugins.cpp
 )
 
 set(wiznote_HEADERS
-    share/wizzip.h
-    share/wizqthelper.h
-    share/wizmisc.h
+    share/WizZip.h
+    share/WizQtHelper.h
+    share/WizMisc.h
     share/sqlite3ext.h
     share/sqlite3.h
     share/cppsqlite3.h
-    share/wizobject.h
-    share/wizkmcore.h
-    #share/wizapi.h
-    share/wizxml.h
-    share/wizxmlrpc.h
-    sync/wizXmlRpcServer.h
-    share/wizDatabase.h
-    share/wizDatabaseManager.h
-    #share/wizverifyaccount.h
-    share/wizsettings.h
-    share/wizui.h
-    share/wizhtml2zip.h
-    share/wizmd5.h
-    share/wizwin32helper.h
-    share/wizdrawtexthelper.h
-    share/wizuihelper.h
-    #share/wizcreateaccount.h
-    share/wizcommonui.h
-    share/wizanimateaction.h
-    share/wizpopupwidget.h
-    share/wizmultilinelistwidget.h
-    share/wizfileiconprovider.h
-    share/wizwindowshelper.h
-    share/wizIndexBase.h
-    share/wizIndex.h
-    share/wizthumbindex.h
-    share/wizenc.h
-    share/wizziwreader.h
-    html/wizhtmlreader.h
-    html/wizhtmlcollector.h
-    sync/wizkmxmlrpc.h
-    sync/wizkmsync.h
-    sync/asyncapi.h
-    #sync/wizCloudPool.h
-    sync/avataruploader.h
-    share/wizSyncableDatabase.h
-    share/wizClucene.h
-    share/wizSearchIndexer.h
-    widgets/wizSegmentedButton.h
-    widgets/wizUserInfoWidget.h
-    widgets/wizUserInfoWidgetBase.h
-    widgets/wizScrollBar.h
-    sync/token.h
-    sync/token_p.h
-    sync/apientry.h
-    sync/apientry_p.h
-    share/wizObjectDataDownloader.h
-    #share/wizUserAvatar.h
-    sync/avatar.h
-    sync/avatar_p.h
-    utils/stylehelper.h
-    utils/pathresolve.h
-    share/wiztitlebar.h
-    share/wizshadowwindow.h
-    share/wizshadoweffect.h
+    share/WizObject.h
+    share/WizKMCore.h
+    share/WizDatabase.h
+    share/WizDatabaseManager.h
+    share/WizSettings.h
+    share/WizUI.h
+    share/WizHtml2Zip.h
+    share/WizMd5.h
+    share/WizWin32Helper.h
+    share/WizDrawTextHelper.h
+    share/WizUIHelper.h
+    share/WizUIBase.h
+    share/WizCommonUI.h
+    share/WizAnimateAction.h
+    share/WizPopupWidget.h
+    share/WizMultiLineListWidget.h
+    share/WizFileIconProvider.h
+    share/WizWindowsHelper.h
+    share/WizIndexBase.h
+    share/WizIndex.h
+    share/WizThumbIndex.h
+    share/WizEnc.h
+    share/WizZiwReader.h
+    share/WizGlobal.h
+    html/WizHtmlReader.h
+    html/WizHtmlCollector.h
+    sync/WizKMServer.h
+    sync/WizKMSync.h
+    sync/WizAsyncApi.h
+    sync/WizAvatarUploader.h
+    share/WizSyncableDatabase.h
+    share/WizSearch.h
+    widgets/WizAboutDialog.h
+    widgets/WizSegmentedButton.h
+    widgets/WizUserInfoWidget.h
+    widgets/WizUserInfoWidgetBase.h
+    widgets/WizScrollBar.h
+    sync/WizToken.h
+    sync/WizToken_p.h
+    sync/WizApiEntry.h
+    share/WizObjectDataDownloader.h
+    sync/WizAvatarHost.h
+    sync/WizAvatarHost_p.h
+    utils/WizStyleHelper.h
+    utils/WizPathResolve.h
+    share/WizWindowTitleBar.h
+    share/WizShadowWindow.h
+    share/WizShadowEffect.h
+    widgets/WizTableSelector.h
 
-    wizdef.h
-    wizactions.h
-    wiznotestyle.h
-    wizCategoryView.h
-    wizCategoryViewItem.h
-    wizDocumentListView.h
-    wizDocumentListViewItem.h
-    wizDocumentView.h
-    wizDocumentWebView.h
-    wizDocumentWebEngine.h
-    wizdocumenthistory.h
-    wizattachmentlistwidget.h
-    wiztaglistwidget.h
-    wizconsoledialog.h
-    wizpreferencedialog.h
-    wizproxydialog.h
-    wizcreateaccountdialog.h
-    wizmainwindow.h
-    #icore.h
-    notecomments.h
-    notecomments_p.h
-    cellbutton.h
-    titlebar.h
-    infobar.h
-    notifybar.h
-    titleedit.h
-    sync/sync.h
-    sync/sync_p.h
-    #wizupdaterprogressdialog.h
-    wizstatusbar.h
-    wizupgradenotifydialog.h
-    #wizcertmanager.h
-    wizusercipherform.h
-    wiznoteinfoform.h
-    wizLineInputDialog.h
-    wizSearchWidget.h
-    wizEditorInsertLinkForm.h
-    wizUpgrade.h
-    wizEditorToolBar.h
-    wizWebSettingsDialog.h
-    wizPopupButton.h
-    wizDocumentTransitionView.h
-    wizButton.h
-    wizEditorInsertTableForm.h
-    wizFileReader.h
-    wizFolderSelector.h
-    wizProgressDialog.h
-    wizFolderView.h
-    wizDocumentSelectionView.h
-    wizUserVerifyDialog.h
-    plugindialog.h
-    utils/logger.h
-    utils/misc.h
-    utils/pinyin.h
-    utils/notify.h
-    messagelistview.h
-    thumbcache.h
-    thumbcache_p.h
-    messagecompleter.h
-    widgets/wizImageButton.h
-    wizDocumentEditStatus.h
-    wizLoginDialog.h
-    share/wizFileMonitor.h
-    wizSearchReplaceWidget.h
+    share/jsoncpp/json/json.h
+    share/jsoncpp/json/json-forwards.h
+    share/WizRequest.h
+
+    WizDef.h
+    WizActions.h
+    WizNoteStyle.h
+    WizCategoryView.h
+    WizCategoryViewItem.h
+    WizDocumentListView.h
+    WizDocumentListViewItem.h
+    WizDocumentView.h
+    WizDocumentWebView.h
+    WizDocumentHistory.h
+    WizAttachmentListWidget.h
+    WizTagListWidget.h
+    WizConsoleDialog.h
+    WizPreferenceDialog.h
+    WizProxyDialog.h
+    WizCreateAccountDialog.h
+    WizMainWindow.h
+    WizCellButton.h
+    WizTitleBar.h
+    WizInfoBar.h
+    WizNotifyBar.h
+    WizTitleEdit.h
+    sync/WizSync.h
+    sync/WizKMSync_p.h
+    WizStatusBar.h
+    WizUpgradeNotifyDialog.h
+    WizUserCipherForm.h
+    WizNoteInfoForm.h
+    WizLineInputDialog.h
+    WizSearchWidget.h
+    WizEditorInsertLinkForm.h
+    WizUpgrade.h
+    WizEditorToolBar.h
+    WizWebSettingsDialog.h
+    WizPopupButton.h
+    WizDocumentTransitionView.h
+    WizButton.h
+    WizEditorInsertTableForm.h
+    WizFileImporter.h
+    WizFolderSelector.h
+    WizProgressDialog.h
+    WizFolderView.h
+    WizDocumentSelectionView.h
+    WizUserVerifyDialog.h
+    utils/WizLogger.h
+    utils/WizMisc.h
+    utils/WizPinyin.h
+    utils/WizNotify.h
+    WizMessageListView.h
+    WizThumbCache.h
+    WizThumbCache_p.h
+    WizMessageCompleter.h
+    widgets/WizImageButton.h
+    WizDocumentEditStatus.h
+    WizLoginDialog.h
+    share/WizFileMonitor.h
+    WizSearchReplaceWidget.h
     widgets/WizCodeEditorDialog.h
-    wizDocTemplateDialog.h
-    wizMobileFileReceiver.h
-    widgets/wizFramelessWebDialog.h
-    share/wizLockedFile.h
-    share/wizLocalPeer.h
-    share/wizSingleApplication.h
-    share/wizRtfReader.h
-    widgets/wizScreenShotWidget.h
-    widgets/wizVerificationCodeDialog.h
-    share/rtf2html/common.h
-    share/rtf2html/config.h
-    share/rtf2html/dbg_iter.h
-    share/rtf2html/fmt_opts.h
-    share/rtf2html/rtf_keyword.h
-    share/rtf2html/rtf_table.h
-    share/rtf2html/rtf_tools.h
-    widgets/wizEmailShareDialog.h
-    share/websocketclientwrapper.h
-    share/websockettransport.h
-    wizWebEngineInjectObject.h
-    widgets/wizMarkdownTemplateDialog.h
-    widgets/wizShareLinkDialog.h
-    share/wizAnalyzer.h
-    share/wizTranslater.h
+    WizDocTemplateDialog.h
+    WizMobileFileReceiver.h
+    widgets/WizFramelessWebDialog.h
+    share/WizLockedFile.h
+    share/WizLocalPeer.h
+    share/WizSingleApplication.h
+    widgets/WizScreenShotWidget.h
+    widgets/WizVerificationCodeDialog.h
+    widgets/WizEmailShareDialog.h
+    share/WebSocketClientWrapper.h
+    share/WebSocketTransport.h
+    share/WizWebEngineView.h
+    WizWebEngineInjectObject.h
+    widgets/WizShareLinkDialog.h
+    share/WizAnalyzer.h
+    share/WizTranslater.h
+    widgets/WizAdvancedSearchDialog.h
+    share/WizUdpClient.h
+    share/WizMessageBox.h
+    WizOEMSettings.h
+    widgets/WizTagBar.h
+    widgets/WizTrayIcon.h
+    share/WizEventLoop.h
+    sync/WizJSONServerBase.h
+    share/WizObjectOperator_p.h
+    share/WizObjectOperator.h
+    widgets/WizLocalProgressWebView.h
+    widgets/WizCrashReportDialog.h
+    widgets/WizCustomToolBar.h
+    widgets/WizTipsWidget.cpp
+    widgets/WizSingleDocumentView.h
+    widgets/WizTemplatePurchaseDialog.h
+    widgets/WizExecutingActionDialog.h
+    widgets/WizUserServiceExprDialog.h
+    WizPositionDelegate.h
+    core/WizAccountManager.h
+    core/WizCommentManager.h
+    core/WizNoteManager.h
+    share/WizThreads.h
+    share/WizThreads_p.h
+    WizInitBizCertDialog.h
+    share/WizDocumentStyle.h
+    WizCombineNotesDialog.h
+    WizSvgEditorDialog.h
+
+    WizPlugins.h
 )
 
 set(wiznote_FORMS
-    ui/wizLineInputDialog.ui
-    ui/wizconsoledialog.ui
-    ui/wizpreferencedialog.ui
-    ui/wizproxydialog.ui
-    ui/wizcreateaccountdialog.ui
-    ui/wizupgradenotifydialog.ui
-    ui/wizusercipherform.ui
-    ui/wiznoteinfoform.ui
-    ui/wizEditorInsertLinkForm.ui
-    ui/wizEditorInsertTableForm.ui
-    ui/wizProgressDialog.ui
-    ui/wizLoginDialog.ui
-    ui/wizSearchReplaceWidget.ui
-    ui/wizDocTemplateDialog.ui
-    ui/wizVerificationCodeDialog.ui
-    ui/wizEmailShareDialog.ui
-    ui/wizMarkdownTemplateDialog.ui
+    ui/WizLineInputDialog.ui
+    ui/WizConsoleDialog.ui
+    ui/WizPreferenceDialog.ui
+    ui/WizProxyDialog.ui
+    ui/WizCreateAccountDialog.ui
+    ui/WizUpgradeNotifyDialog.ui
+    ui/WizUserCipherForm.ui
+    ui/WizNoteInfoForm.ui
+    ui/WizEditorInsertLinkForm.ui
+    ui/WizEditorInsertTableForm.ui
+    ui/WizProgressDialog.ui
+    ui/WizLoginDialog.ui
+    ui/WizSearchReplaceWidget.ui
+    ui/WizDocTemplateDialog.ui
+    ui/WizVerificationCodeDialog.ui
+    ui/WizEmailShareDialog.ui
+    ui/WizAdvancedSearchDialog.ui
+    ui/WizCrashReportDialog.ui
+    ui/WizTemplatePurchaseDialog.ui
+    ui/WizExecutingActionDialog.ui
+    ui/WizInitBizCertDialog.ui
+    ui/WizUserServiceExprDialog.ui
+    ui/WizCombineNotesDialog.ui
 )
 
 set(wiznote_TRANSLATIONS
@@ -356,11 +408,13 @@ qt_add_ui(wiznote_FORM_HEADERS ${wiznote_FORMS})
 qt_add_resources(wiznote_RC ${wiznote_RCS})
 qt_add_translation(wiznote_QM ${wiznote_TRANSLATIONS})
 
-message("WizNote whll compiling as ${CMAKE_BUILD_TYPE}, use Qt: ${QT_VERSION}")
+message("WizNote whill compiling as ${CMAKE_BUILD_TYPE}, use Qt: ${QT_VERSION}")
 
 # build
 if(UNIX)
     if(APPLE)
+        qt_add_ui(wiznote_FORM_HEADERS ${wiznote_FORMS_MAC})
+
         set(wiznote_LOGO ${CMAKE_SOURCE_DIR}/build/common/logo/wiznote.icns)
 
         # we should copy qt internal qm files, otherwise qt can't translate some internal resources
@@ -368,12 +422,12 @@ if(UNIX)
         # refer to: https://bugreports.qt-project.org/browse/QTBUG-18662
         file(GLOB _qt5_QM ${qt_translations_dir}/qt_*.qm)
 
-        add_executable(WizNote MACOSX_BUNDLE ${wiznote_SOURCES} ${wiznote_HEADERS} ${wiznote_SOURCES_MAC} ${wiznote_HEADERS_MAC} ${wiznote_FORM_HEADERS} ${wiznote_QM} ${_qt5_QM} ${wiznote_RC} ${wiznote_LOGO})
+        add_executable(WizNote MACOSX_BUNDLE  ${wiznote_HEADERS} ${wiznote_HEADERS_MAC} ${wiznote_FORM_HEADERS} ${wiznote_SOURCES_MAC} ${wiznote_SOURCES} ${wiznote_QM} ${_qt5_QM} ${wiznote_RC} ${wiznote_LOGO})
         set_target_properties(WizNote PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
         set_target_properties(${PROJECT_NAME} PROPERTIES AUTOMOC_MOC_OPTIONS "-DQ_OS_MAC")
 
         # this should be issue of cmake, refer: http://public.kitware.com/Bug/bug_revision_view_page.php?rev_id=958
-        set_target_properties(${PROJECT_NAME} PROPERTIES LINK_FLAGS "-F /Library/Frameworks")
+        set_target_properties(${PROJECT_NAME} PROPERTIES LINK_FLAGS "-F /System/Library/Frameworks")
 
         # qmake will do this automatically
         set_target_properties(${PROJECT_NAME} PROPERTIES COMPILE_FLAGS "-mmacosx-version-min=10.7")
@@ -382,11 +436,20 @@ if(UNIX)
         cmake_policy(SET CMP0016 OLD)
         find_library(_CARBON_LIBRARY Carbon)
         find_library(_COCOA_LIBRARY Cocoa)
-        find_library(_WEBKIT_LIBRARY WebKit)
+        find_library(_WEBENGINE_LIBRARY WebEngine)
+        find_library(_WEBENGINEWIDGETS_LIBRARY WebEngineWidgets)
+        find_library(_WEBCHANNEL_LIBRARY WebChannel)
+        find_library(_STORE_LIBRARY StoreKit)
+        find_library(_IO_LIBRARY IOKit)
+        find_package(Qt5Svg)
+        if (PLCrashReporter)
+            find_library(_CRASHREPORTER CrashReporter)
+        endif(PLCrashReporter)
 
         # please set env: MACOSX_DEPLOYMENT_TARGET = 10.8 to ~/.bash_profile if you need NSUserNotification support.
         message("use cocoa library: ${_COCOA_LIBRARY}")
-        target_link_libraries(${PROJECT_NAME} ${_CARBON_LIBRARY} ${_COCOA_LIBRARY} ${_WEBKIT_LIBRARY})
+        target_link_libraries(${PROJECT_NAME} ${_CARBON_LIBRARY} ${_COCOA_LIBRARY}
+                  ${_STORE_LIBRARY} ${_IO_LIBRARY} ${_CRASHREPORTER})
 
         # setup plist info and logo
         set_target_properties(${PROJECT_NAME} PROPERTIES MACOSX_BUNDLE_INFO_PLIST "${CMAKE_SOURCE_DIR}/build/osx/Info.plist")
@@ -402,20 +465,11 @@ if(UNIX)
         add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
             COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_SOURCE_DIR}/build/osx/localize/ ${WIZNOTE_RESOURCE_DIR})
 
-
-        if(CMAKE_BUILD_TYPE STREQUAL "Release")
-            # resovle library dependency if build type is release
-            add_dependencies(WizNote coreplugin_plugin helloworld_plugin)
-        endif()
-
-        if(NOT APPSTORE_BUILD)
-            add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
-                COMMAND ${qt_binary_dir}/macdeployqt ${WIZNOTE_ROOT_DIR})
-        endif()
-
     elseif(NOT APPLE)
         add_executable(WizNote ${wiznote_SOURCES} ${wiznote_HEADERS} ${wiznote_FORM_HEADERS} ${wiznote_QM} ${wiznote_RC})
         set_target_properties(${PROJECT_NAME} PROPERTIES AUTOMOC_MOC_OPTIONS "-DQ_OS_LINUX")
+        set_target_properties(${PROJECT_NAME} PROPERTIES LINK_FLAGS "-static-libstdc++ -static-libgcc")
+        find_package(Qt5Svg)
 
         install(TARGETS ${PROJECT_NAME} RUNTIME DESTINATION bin)
         install(DIRECTORY ${CMAKE_SOURCE_DIR}/share/ DESTINATION share/wiznote PATTERN ".DS_Store" EXCLUDE)
@@ -436,34 +490,100 @@ if(UNIX)
                 COMMAND ${CMAKE_COMMAND} -E copy ${_file} ${CMAKE_BINARY_DIR}/share/wiznote/locales/)
         endforeach()
     endif()
+else()
+    add_definitions(-DUNICODE=TRUE)
+    add_definitions(-D_UNICODE=TRUE)
+    add_executable(WizNote WIN32 ${wiznote_SOURCES} ${wiznote_HEADERS} ${wiznote_FORM_HEADERS} ${wiznote_QM} ${wiznote_RC})
+    set_target_properties(${PROJECT_NAME} PROPERTIES AUTOMOC_MOC_OPTIONS "-DQ_OS_WIN32")
+
+    install(TARGETS ${PROJECT_NAME} RUNTIME DESTINATION bin)
+    install(DIRECTORY ${CMAKE_SOURCE_DIR}/share/ DESTINATION share/wiznote PATTERN ".DS_Store" EXCLUDE)
+    install(FILES ${wiznote_QM} DESTINATION share/wiznote/locales)
+    install(FILES ${CMAKE_SOURCE_DIR}/LICENSE DESTINATION share/licenses/wiznote)
+
+    add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
+        COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_SOURCE_DIR}/share/ ${CMAKE_BINARY_DIR}/share/wiznote)
+
+    foreach(_file ${wiznote_QM})
+        add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
+            COMMAND ${CMAKE_COMMAND} -E make_directory ${CMAKE_BINARY_DIR}/share/wiznote/locales/
+            COMMAND ${CMAKE_COMMAND} -E copy ${_file} ${CMAKE_BINARY_DIR}/share/wiznote/locales/)
+    endforeach()
 endif()
 
 qt_use_modules(WizNote)
 qt_suppress_warnings(WizNote)
 
 include_directories(
-    ${plugins_SOURCE_DIR}
     ${CMAKE_CURRENT_SOURCE_DIR}
     ${CMAKE_CURRENT_BINARY_DIR}
     ${CMAKE_SOURCE_DIR}/lib
-    ${CMAKE_SOURCE_DIR}/lib/clucene/src/core
-    ${CMAKE_SOURCE_DIR}/lib/clucene/src/shared
-    ${CMAKE_BINARY_DIR}/lib/clucene/src/shared
-)
+    ${CMAKE_SOURCE_DIR}/lib/openssl/include
+    )
+
+if (APPLE)
+    include_directories(~/Library/Frameworks)
+elseif(WIN32)
+    include_directories(
+        ${CMAKE_SOURCE_DIR}/lib/zlib
+        ${CMAKE_BINARY_DIR}/lib/zlib
+        )
+endif()
+
 
 link_directories(
     ${CMAKE_BINARY_DIR}/bin
 )
 
-target_link_libraries(${PROJECT_NAME}
-    quazip
-    cryptlib
-    clucene-core-static
-    clucene-shared-static
-    extensionsystem
-    aggregation
-    coreplugin
-    helloworld
-    markdown
-    ${CMAKE_DL_LIBS}
-)
+if(UNIX)
+	if(APPLE)
+		if(APPSTORE_BUILD)
+			target_link_libraries(${PROJECT_NAME}
+				quazip
+				cryptlib
+                Qt5::Svg
+				Qt5::WebEngine
+                Qt5::WebChannel
+				Qt5::WebEngineWidgets
+				${CMAKE_SOURCE_DIR}/lib/openssl/lib/libcrypto.a
+				${CMAKE_SOURCE_DIR}/lib/openssl/lib/libssl.a
+				${CMAKE_DL_LIBS}
+			)
+		else(APPSTORE_BUILD)
+			target_link_libraries(${PROJECT_NAME}
+				quazip
+				cryptlib
+                Qt5::Svg
+                Qt5::WebEngine
+                Qt5::WebChannel
+				Qt5::WebEngineWidgets
+				${CMAKE_SOURCE_DIR}/lib/openssl/lib/libcrypto.a
+				${CMAKE_SOURCE_DIR}/lib/openssl/lib/libssl.a
+				${CMAKE_DL_LIBS}
+			)
+		endif(APPSTORE_BUILD)
+	else(APPLE) #linux
+		target_link_libraries(${PROJECT_NAME}
+                        -lpthread
+                        X11
+			quazip
+			cryptlib
+            Qt5::Svg
+            Qt5::WebEngine
+            Qt5::WebChannel
+			Qt5::WebEngineWidgets
+			${CMAKE_DL_LIBS}
+		)
+	endif(APPLE)
+else(NOT UNIX)
+	target_link_libraries(${PROJECT_NAME}
+		quazip
+		cryptlib
+        Qt5::Svg
+        Qt5::WebEngine
+        Qt5::WebChannel
+		Qt5::WebEngineWidgets
+		${CMAKE_DL_LIBS}
+                Qt5::WinMain
+	)
+endif()

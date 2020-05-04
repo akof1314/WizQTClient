@@ -1,4 +1,4 @@
-////////////////////////////////////////////////////////////////////////////////
+﻿////////////////////////////////////////////////////////////////////////////////
 // CppSQLite3 - A C++ wrapper around the SQLite3 embedded database library.
 //
 // Copyright (c) 2004 Rob Groves. All Rights Reserved. rob.groves@btinternet.com
@@ -29,8 +29,8 @@
 #include <cstdlib>
 #include <assert.h>
 
-#include "../utils/pathresolve.h"
-#include "../utils/logger.h"
+#include "../utils/WizPathResolve.h"
+#include "../utils/WizLogger.h"
 
 
 // Named constant for passing to CppSQLite3Exception when passing it a string
@@ -293,22 +293,22 @@ double CppSQLite3Query::getFloatField(const CString& szField, double fNullValue/
 }
 
 
-COleDateTime CppSQLite3Query::getTimeField(int nField, time_t tNullValue /*= 0*/)
+WizOleDateTime CppSQLite3Query::getTimeField(int nField, time_t tNullValue /*= 0*/)
 {
     CString str = getStringField(nField);
-	if (str.IsEmpty())
+    if (str.isEmpty())
 	{
 		if (0 == tNullValue)
             return WizGetCurrentTime();
 		else
-            return COleDateTime(tNullValue);
+            return WizOleDateTime(tNullValue);
 	}
 	else
 	{
 		return WizStringToDateTime(str);
 	}
 }
-COleDateTime CppSQLite3Query::getTimeField(const CString& szField, time_t tNullValue /*= 0*/)
+WizOleDateTime CppSQLite3Query::getTimeField(const CString& szField, time_t tNullValue /*= 0*/)
 {
 	int nField = fieldIndex(szField);
 	return getTimeField(nField, tNullValue);
@@ -317,7 +317,7 @@ COleDateTime CppSQLite3Query::getTimeField(const CString& szField, time_t tNullV
 COLORREF CppSQLite3Query::getColorField(int nField, COLORREF crNullValue /*= 0*/)
 {
     CString str = getStringField(nField);
-	if (str.IsEmpty())
+    if (str.isEmpty())
 	{
 		return crNullValue;
 	}
@@ -326,12 +326,29 @@ COLORREF CppSQLite3Query::getColorField(int nField, COLORREF crNullValue /*= 0*/
 		return WizStringToColor(str);
 	}
 }
-COLORREF CppSQLite3Query::getColorField(const CString& szField, COLORREF crNullValue /*= 0*/)
+QColor CppSQLite3Query::getColorField2(const CString& szField, QColor crNullValue /*= 0*/)
 {
 	int nField = fieldIndex(szField);
-	return getColorField(nField, crNullValue);
+    return getColorField2(nField, crNullValue);
 }
 
+QColor CppSQLite3Query::getColorField2(int nField, QColor crNullValue /*= 0*/)
+{
+    CString str = getStringField(nField);
+    if (str.isEmpty())
+    {
+        return crNullValue;
+    }
+    else
+    {
+        return WizStringToColor2(str);
+    }
+}
+COLORREF CppSQLite3Query::getColorField(const CString& szField, COLORREF crNullValue /*= 0*/)
+{
+    int nField = fieldIndex(szField);
+    return getColorField(nField, crNullValue);
+}
 
 CString CppSQLite3Query::getStringField(int nField, const CString& szNullValue/*=""*/)
 {
@@ -407,7 +424,7 @@ int CppSQLite3Query::fieldIndex(const CString& szField)
 		{
 			const char* szTemp = sqlite3_column_name(mpVM, nField);
 
-            if (szField.CompareNoCase(szTemp) == 0)
+            if (szField.compareNoCase(szTemp) == 0)
 			{
 				return nField;
 			}
@@ -796,6 +813,20 @@ bool CppSQLite3DB::tableExists(const CString& strTable)
 	return (nRet > 0);
 }
 
+bool CppSQLite3DB::columnExists(const CString& strTable, const CString& strColumn)
+{
+    try
+    {
+        CString strSQL = WizFormatString1("select * from %1 limit 0, 1", strTable);
+        CppSQLite3Query query = execQuery(strSQL);
+        return query.fieldIndex(strColumn) != -1;
+    }
+    catch (const CppSQLite3Exception& )
+    {
+        return false;
+    }
+}
+
 int CppSQLite3DB::execDML(const CString& strSQL)
 {
 	checkDB();
@@ -868,17 +899,9 @@ void CppSQLite3DB::setBusyTimeout(int nMillisecs)
 	sqlite3_busy_timeout(mpDB, mnBusyTimeoutMs);
 }
 
-BOOL CppSQLite3DB::IsOpened()
+BOOL CppSQLite3DB::isOpened()
 {
-	try
-	{
-		checkDB();
-		return TRUE;
-	}
-	catch (const CppSQLite3Exception& )
-	{
-		return FALSE;
-	}
+    return mpDB ? TRUE : FALSE;
 }
 
 void CppSQLite3DB::checkDB()
@@ -1561,10 +1584,10 @@ static int process_input(struct callback_data *p, FILE *in){
 
 bool CppSQLite3DB::dump(const CString& strNewFileName)
 {
-    FILE* fp = fopen(strNewFileName.toLocal8Bit(), _T("wb"));
+    FILE* fp = fopen(strNewFileName.toLocal8Bit(), "wb");
     if (!fp)
 	{
-                TOLOG1(_T("Failed to open file: %1"), strNewFileName);
+        TOLOG1("Failed to open file: %1", strNewFileName);
 		return false;
 	}
 	//
@@ -1609,10 +1632,10 @@ bool CppSQLite3DB::dump(const CString& strNewFileName)
 
 bool CppSQLite3DB::read(const CString& strNewFileName)
 {
-    FILE* fp = fopen(::WizBSTR2UTF8(strNewFileName).c_str(), _T("rb"));
+    FILE* fp = fopen(::WizBSTR2UTF8(strNewFileName).c_str(), "rb");
     if (!fp)
 	{
-        TOLOG1(_T("Failed to open file: %1"), strNewFileName);
+        TOLOG1("Failed to open file: %1", strNewFileName);
 		return false;
 	}
 	//
@@ -1637,7 +1660,7 @@ bool CppSQLite3DB::repair(const CString& strDBFileName, const CString& strRetFil
 {
 	try
 	{
-        CString strTempFileName = Utils::PathResolve::tempPath() + WizIntToStr(GetTickCount()) + _T(".tmp");
+        CString strTempFileName = Utils::WizPathResolve::tempPath() + WizIntToStr(WizGetTickCount()) + ".tmp";
 		//
 		CppSQLite3DB dbSrc;
         dbSrc.open(strDBFileName);
@@ -1649,9 +1672,9 @@ bool CppSQLite3DB::repair(const CString& strDBFileName, const CString& strRetFil
 		//
 		dbSrc.close();
 		//
-        if (PathFileExists(strRetFileName))
+        if (WizPathFileExists(strRetFileName))
 		{
-            DeleteFile(strRetFileName);
+            WizDeleteFile(strRetFileName);
 		}
 		//
 		CppSQLite3DB dbDest;
@@ -1665,14 +1688,14 @@ bool CppSQLite3DB::repair(const CString& strDBFileName, const CString& strRetFil
 		dbDest.close();
 		//
 #ifdef Q_OS_WIN32
-                _flushall();
+        _flushall();
 #endif
 		//
 		return true;
 	}
 	catch (CppSQLite3Exception& e)
 	{
-                TOLOG(e.errorMessage());
+         TOLOG(e.errorMessage());
 		return false;
 	}
 	//

@@ -1,44 +1,52 @@
-#ifndef WIZCODEEDITORDIALOG_H
+﻿#ifndef WIZCODEEDITORDIALOG_H
 #define WIZCODEEDITORDIALOG_H
 
 #include <QDialog>
-#include <QWebView>
+#include <QWebEngineView>
 #include <QPointer>
-#include "wizdef.h"
+#include "WizDef.h"
+#include "share/WizWebEngineView.h"
 
-class CWizExplorerApp;
+class WizExplorerApp;
 class QComboBox;
 class QWebView;
 class QMenu;
 class QPlainTextEdit;
-class CWizDocumentWebView;
+class WizDocumentWebView;
+class WizWebEngineView;
 
-class WizCodeEditorDialog : public QDialog
+class WizCodeEditorDialog : public WizWebEngineViewContainerDialog
 {
     Q_OBJECT
 public:
-    explicit WizCodeEditorDialog(CWizExplorerApp& app, CWizDocumentWebView *external, QWidget *parent = 0);
+    explicit WizCodeEditorDialog(WizExplorerApp& app, WizDocumentWebView *external, QWidget *parent = 0);
     void setCode(const QString& strCode);
+    //
+
+    static bool selectAll();
+    static bool undo();
+    static bool copy();
+    static bool cut();
+    static bool paste();
+
 signals:
     void insertHtmlRequest(QString strHtml);
 
 public slots:
-    void registerJSObject();
     void insertHtml(const QString& strResultDiv);
 
     QString getLastCodeType();
     void saveLastCodeType(const QString& codeType);
 
-        // if use webengine
-//    void onHtmlLoaded(bool ok);
-//    void runJs();
 protected:
-    void changeEvent(QEvent * event);
+    virtual void showEvent(QShowEvent *);
+    virtual void hideEvent(QHideEvent *);
+    virtual void closeEvent(QCloseEvent *);
 
 private:
-    QWebView *m_codeBrowser;
-    CWizExplorerApp& m_app;
-    CWizDocumentWebView *m_external;
+    WizWebEngineView *m_codeBrowser;
+    WizExplorerApp& m_app;
+    WizDocumentWebView *m_external;
 };
 
 #endif // WIZCODEEDITORDIALOG_H

@@ -1,4 +1,4 @@
-////////////////////////////////////////////////////////////////////////////////
+﻿////////////////////////////////////////////////////////////////////////////////
 // CppSQLite3 - A C++ wrapper around the SQLite3 embedded database library.
 //
 // Copyright (c) 2004 Rob Groves. All Rights Reserved. rob.groves@btinternet.com
@@ -31,7 +31,7 @@
 #include "sqlite3.h"
 #include <cstdio>
 #include <cstring>
-#include "wizmisc.h"
+#include "WizMisc.h"
 
 #define CPPSQLITE_ERROR 1000
 
@@ -96,11 +96,14 @@ public:
     double getFloatField(int nField, double fNullValue=0.0);
     double getFloatField(const CString& szField, double fNullValue=0.0);
 
-    COleDateTime getTimeField(int nField, time_t tNullValue = 0);
-    COleDateTime getTimeField(const CString& szField, time_t tNullValue = 0);
+    WizOleDateTime getTimeField(int nField, time_t tNullValue = 0);
+    WizOleDateTime getTimeField(const CString& szField, time_t tNullValue = 0);
 
     COLORREF getColorField(int nField, COLORREF crNullValue = 0);
     COLORREF getColorField(const CString& szField, COLORREF crNullValue = 0);
+
+    QColor getColorField2(int nField, QColor crNullValue = QColor());
+    QColor getColorField2(const CString& szField, QColor crNullValue = QColor());
 
     CString getStringField(int nField, const CString& szNullValue = "");
     CString getStringField(const CString& szField, const CString& szNullValue="");
@@ -183,6 +186,7 @@ public:
     void close();
 
     bool tableExists(const CString& strTable);
+    bool columnExists(const CString& strTable, const CString& strColumn);
 
     int execDML(const CString& strSQL);
 
@@ -200,7 +204,7 @@ public:
 
     static const char* SQLiteVersion() { return SQLITE_VERSION; }
 	//
-    BOOL IsOpened();
+    BOOL isOpened();
 	//
     int updateBlob(const CString& szTableName, const CString& szFieldName, const unsigned char* data, int dataLength, const CString& szWhere);
     int insertBlob(const CString& szSQL, const unsigned char* data, int dataLength);

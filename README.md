@@ -18,51 +18,32 @@ freedom, means knowledge, means PKM, means this WizNote client.
 if you are windows or portable platform users, we have WizNote for windows, ios, android from our [Homepage](http://www.wiznote.com)
 
 
-## Compile
+## Compile (Windows, macOS, Linux)
 
-visit: (http://wiznote-qt.com)
+visit: (https://note.wiz.cn/pages/manage/biz/payRead.html?kb=4e2d9734-b669-4b6f-91ad-e056be317cea)
 
-Different distributions or platforms
+
 ---
 
-### Mac OSX
+### Install on Mac macOS
 
-[Download](http://www.wiz.cn/wiznote-maclinux.html) from our homepage or install from [AppStore](https://itunes.apple.com/cn/app/wiznote/id863771545?l=zh&ls=1&mt=12).
-
-### Ubuntu
-
-install from [PPA](https://launchpad.net/~wiznote-team/+archive/ppa) is much more convenient:
-
-    $ sudo add-apt-repository ppa:wiznote-team
-    $ sudo apt-get update
-    $ sudo apt-get install wiznote
+[Download](http://www.wiz.cn/wiznote-maclinux.html)
 
 
-### Fedora 19/20/21/rawhide
+### Install on Linux, Windows
 
-    $ sudo yum install dnf-plugins-core 
-    $ sudo dnf copr enable mosquito/myrepo 
-    $ sudo yum localinstall http://download1.rpmfusion.org/free/fedora/rpmfusion-free-release-$(rpm -E %fedora).noarch.rpm http://download1.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-$(rpm -E %fedora).noarch.rpm
-    $ sudo yum install wiznote      # Stable version  
-    Or
-    $ sudo yum install wiznote-beta      # Development version
+Please compile from source.
 
-Thanks for mosquito's contribution, [more Fedora/CentOS soft.](https://copr.fedoraproject.org/coprs/mosquito/myrepo/)
-
-
-### RHEL/CentOS 7
-
-    $ sudo yum-config-manager --add-repo=https://copr.fedoraproject.org/coprs/mosquito/myrepo/repo/epel-$(rpm -E %?rhel)/mosquito-myrepo-epel-$(rpm -E %?rhel).repo 
-    $ sudo yum install epel-release 
-    $ sudo yum localinstall http://li.nux.ro/download/nux/dextop/el$(rpm -E %rhel)/x86_64/nux-dextop-release-0-2.el$(rpm -E %rhel).nux.noarch.rpm http://download1.rpmfusion.org/nonfree/el/updates/$(rpm -E %rhel)/x86_64/rpmfusion-nonfree-release-$(rpm -E %rhel)-1.noarch.rpm http://download1.rpmfusion.org/free/el/updates/$(rpm -E %rhel)/x86_64/rpmfusion-free-release-$(rpm -E %rhel)-1.noarch.rpm 
-    $ sudo yum install wiznote      # Stable version  
-    Or
-    $ sudo yum install wiznote-beta      # Development version
-
-
-### others
-
-Read the compile section and compile for your own flavor!
 
 
 *All things done, enjoy!*
+
+-------
+
+### 在Windows／macOS／Linux上面编译：
+
+请访问: (https://note.wiz.cn/pages/manage/biz/payRead.html?kb=4e2d9734-b669-4b6f-91ad-e056be317cea)
+
+### 在macOS上面安装：
+
+[Download](http://www.wiz.cn/wiznote-maclinux.html)

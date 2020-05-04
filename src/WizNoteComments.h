@@ -1,0 +1,7 @@
+﻿#ifndef WIZSERVICE_NOTECOMMENTS_H
+#define WIZSERVICE_NOTECOMMENTS_H
+
+#include <QObject>
+
+
+#endif // WIZSERVICE_NOTECOMMENTS_H

@@ -9,6 +9,7 @@
 	<script type="text/javascript">
 
 	var DEBUG = false;
+	var MAX_INT = 100000000;
 
 	function DEBUG_ALERT (msg) {
 		if (DEBUG) {
@@ -23,18 +24,28 @@
 	// var documentTitle = "TestDocumentTitle";
 
 	function toLog(log) {
-		try {
-			external.writeToLog(log);
-		}
-		catch (e) {
-		}
+            external.writeToLog(log);
 	}
 
+        function getParameterByName(name, url) {
+            if (!url) {
+              url = window.location.href;
+            }
+            name = name.replace(/[\[\]]/g, "\\$&");
+            var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
+                results = regex.exec(url);
+            if (!results) return null;
+            if (!results[2]) return '';
+            return decodeURIComponent(results[2].replace(/\+/g, " "));
+        }
+
+        var share_server = getParameterByName("share_server");
 	var kbGuid;
 	var documentGuid;
 	var documentTitle;
-	var url = 'http://fromwiz.com/share/api/shares';
+        var url = share_server + "/api/shares";
 	var token;
+        //
 
 	var tokenRefreshed = false;
 
@@ -48,21 +59,11 @@
 	}
 
 	function getToken(callback) {
-		// try {
-			kbGuid = external.getKbGuid();
-			documentGuid = external.getGuid();
-			documentTitle = external.getTitle();
-			// external.tokenObtained.disconnect(callback);
-			external.tokenObtained.connect(callback);
-			external.getToken();
-			
-			// external.Window.GetToken(function(t) {
-			// 	token = t;
-				// callback();
-			// });
-		// }
-		// catch (e) {
-		// }
+            kbGuid = external.kbGuid;
+            documentGuid = external.documentGuid;
+            documentTitle = external.title;
+            external.tokenObtained.connect(callback);
+            external.getToken();
 	}
 
 	var requestSucceeded = 0;
@@ -130,15 +131,21 @@
 			"readCountLimit": null,
 			"shareId": null,
 			"readCount": null,
-			"expiredAt": null
-		};
+			"expiredAt": null,
+			"expiredDaysSet": null,
+                        "readCountSet": null,
+                        "shareUrl" : null
+                };
 
 		var tempInfo = {
 			"password": null,
 			"readCountLimit": null,
 			"shareId": null,
 			"readCount": null,
-			"expiredAt": null
+			"expiredAt": null,
+			"expiredDaysSet": null,
+                        "readCountSet": null,
+                        "shareUrl" : null
 		};
 
 		var callback = {
@@ -155,6 +162,9 @@
 			tempInfo.shareId = info.shareId;
 			tempInfo.readCount = info.readCount;
 			tempInfo.expiredAt = info.expiredAt;
+			tempInfo.expiredDaysSet = info.expiredDaysSet;
+			tempInfo.readCountSet = info.readCountSet;
+                        tempInfo.shareUrl = info.shareUrl;
 		}
 
 		function _updateInfo() {
@@ -163,6 +173,9 @@
 			info.shareId = tempInfo.shareId;
 			info.readCount = tempInfo.readCount;
 			info.expiredAt = tempInfo.expiredAt;
+			info.expiredDaysSet = tempInfo.expiredDaysSet;
+			info.readCountSet = tempInfo.readCountSet;
+                        info.shareUrl = tempInfo.shareUrl;
 		}
 
 		function _share(callback) {
@@ -192,6 +205,14 @@
 			if (null !== tempInfo.expiredAt) {
 				var d = new Date(tempInfo.expiredAt);
 				params['expiredAt'] = d.toISOString();
+			}
+			params['expiredDaysSet'] = MAX_INT;
+			params['readCountSet'] = MAX_INT;
+			if (null !== tempInfo.expiredDaysSet) {
+				params['expiredDaysSet'] = tempInfo.expiredDaysSet;
+			}
+			if (null !== tempInfo.readCountSet) {
+				params['readCountSet'] = tempInfo.readCountSet;
 			}
 			//
 			request('PUT', url + '/' + tempInfo.shareId, params, function(status, resp) {
@@ -314,14 +335,20 @@
 				now.setDate(now.getDate() + day);
 				tempInfo.expiredAt = now.getTime();
 				tempInfo.readCountLimit = null;
+				tempInfo.expiredDaysSet = day;
+				tempInfo.readCountSet = null;
 			}
 			else if (null != time) {
 				tempInfo.expiredAt = null;
-				tempInfo.readCountLimit = time;
+				tempInfo.readCountLimit = time + info.readCount;
+				tempInfo.expiredDaysSet = null;
+				tempInfo.readCountSet = time;
 			}
 			else {
 				tempInfo.expiredAt = null;
 				tempInfo.readCountLimit = null;
+				tempInfo.expiredDaysSet = null;
+				tempInfo.readCountSet = null;
 			}
 			//
 			_updateShare(callback);
@@ -392,18 +419,30 @@
 					var retCode = resp.return_code;
 					switch (retCode) {
 						case 200:
-							if (resp.password)
+							if (resp.password){
 								info.password = resp.password;
-							if (resp.shareId)
+							}
+							if (resp.shareId) {
 								info.shareId = resp.shareId;
-							if (resp.readCountLimit)
+							}
+							if (resp.readCountLimit) {
 								info.readCountLimit = resp.readCountLimit;
-							if (resp.readCount)
+							}
+							if (resp.readCount) {
 								info.readCount = resp.readCount;
-							if (resp.expiredAt)
+							}
+							if (resp.expiredAt) {
 								info.expiredAt = resp.expiredAt;
+							}
+							if (resp.expiredDaysSet) {
+								info.expiredDaysSet = resp.expiredDaysSet;
+							}
+							if (resp.readCountSet) {
+								info.readCountSet = resp.readCountSet;
+							}
 							//
-							callback.shareCallback(requestSucceeded);
+                                                        info.shareUrl = resp.shareUrl;
+                                                        callback.shareCallback(requestSucceeded);
 							break;
 						case 301:
 							// invalid token;
@@ -430,14 +469,24 @@
 							if (resp.password)
 								info.password = resp.password;
 							info.shareId = resp.shareId;
-							if (resp.readCountLimit)
+							if (resp.readCountLimit) {
 								info.readCountLimit = resp.readCountLimit;
-							if (resp.readCount)
+							}
+							if (resp.readCount) {
 								info.readCount = resp.readCount;
-							if (resp.expiredAt)
+							}
+							if (resp.expiredAt) {
 								info.expiredAt = resp.expiredAt;
+							}
+							if (resp.expiredDaysSet){
+								info.expiredDaysSet = resp.expiredDaysSet;
+							}
+							if (resp.readCountSet) {
+								info.readCountSet = resp.readCountSet;
+							}
 							//
-							callback.shareCallback(requestSucceeded);
+                                                        info.shareUrl = resp.shareUrl;
+                                                        callback.shareCallback(requestSucceeded);
 							break;
 						case 3379:
 							// non vip can't set read limit
@@ -460,10 +509,11 @@
 		}		
 		//
 		function getLink() {
-			if (!info.shareId)
-				return null;
+                        return info.shareUrl;
+                        //if (!info.shareId)
+                        //	return null;
 			//
-			return "http://fromwiz.com/share/s/" + info.shareId;
+                        //return share_server + "/s/" + info.shareId;
 		}
 		//
 		function getPassword() {
@@ -482,6 +532,13 @@
 			return info.readCount;
 		}
 		//
+		function getOptionsDays() {
+			return info.expiredDaysSet;
+		}
+		function getOptionsTimes() {
+			return info.readCountSet;
+		}
+		//
 		return {
 			busy: busy,
 			share: share,
@@ -493,7 +550,9 @@
 			getPassword: getPassword,
 			getExpiredAt: getExpiredAt,
 			getReadCountLimit: getReadCountLimit,
-			getReadCount: getReadCount
+			getReadCount: getReadCount,
+			getOptionsDays: getOptionsDays,
+			getOptionsTimes: getOptionsTimes
 		};
 	})();
 
@@ -516,16 +575,16 @@
 	}
 
 	function resizeex() {
-		if (customObject) {
+                if (external) {
 			var width = document.body.clientWidth;
 			var height = document.body.clientHeight;
-			customObject.resizeEx(width, height);
+                        external.resizeEx(width, height);
 		}
 	}
 
 	function closeDialog() {
-		if (customObject) {
-			customObject.close();
+                if (external) {
+                        external.close();
 		}
 	}
 
@@ -533,6 +592,16 @@
 		if (external && external.logAction) {
 			external.logAction(text);
 		}
+	}
+	function isDisableButton(node) {
+		if (node && node.className) {
+			if (-1 != node.className.indexOf("disable"))
+				return true;
+			else 
+				return false;
+		}
+		//
+		return true;
 	}
 
 	function onCreateLinkError(errorText) {
@@ -744,6 +813,8 @@
 	}
 	//
 	function onModifyOptions() {
+		if (isDisableButton(this))
+			return;
 		if (WizShare.busy)
 			return;
 		if (!WizShare.getLink())
@@ -902,8 +973,8 @@
 		url = url.replace("{documentTitle}", documentTitle)
 				.replace("{url}", link);
 		//
-		if (customObject) {
-			customObject.openindefaultbrowser(url);
+                if (external) {
+                        external.openindefaultbrowser(url);
 		}
 		else {
 			window.open(url);
@@ -984,8 +1055,8 @@
 	//
 	function onClickLink(e) {
 		var url = linkPart1.innerText;
-		if (customObject) {
-			customObject.openindefaultbrowser(url);
+                if (external) {
+                        external.openindefaultbrowser(url);
 		}
 		else {
 			window.open(url);
@@ -1088,9 +1159,85 @@
 		else if (null !== expiredAt) {
 			var dayTips = document.querySelector('.lmt-tips-day');
 			if (dayTips) {
-				dayTips.style.display = "";
-				var days = Math.round((expiredAt - Date.now()) / (1000*60*60*24.0));
+				dayTips.style.display = "";				
+				var expiredDate = new Date(expiredAt);
+				if (!expiredDate.getTime()) {
+                                    expiredDate.formateISO8601StringParam = expiredAt;
+                                    expiredDate = new Date(external.formateISO8601StringResult);
+				}				
+				var days = Math.round((expiredDate.getTime() - Date.now()) / (1000*60*60*24.0));
 				dayTips.innerText = sharelocale_remain_days.replace("%1", days);
+			}
+		}
+		//
+		var optionsDays = WizShare.getOptionsDays();
+		var optionsTimes = WizShare.getOptionsTimes();
+		var options = document.querySelectorAll(".btnLimitDay");
+		for (var i = 0; i < options.length; i++) {
+			options[i].classList.remove("option-select");
+			options[i].classList.add("option-unselect");
+		}
+		//
+		var options = document.querySelectorAll(".btnLimitTime");
+		for (var i = 0; i < options.length; i++) {
+			options[i].classList.remove("option-select");
+			options[i].classList.add("option-unselect");
+		}		
+		//
+		var daysUnlimit = document.querySelector(".lmt-day-unlmt");
+		if (daysUnlimit) {
+			daysUnlimit.classList.remove("option-unselect");
+			daysUnlimit.classList.add("option-select");
+		}
+		var timesUnlimit = document.querySelector(".lmt-time-unlmt");
+		if (timesUnlimit) {
+			timesUnlimit.classList.remove("option-unselect");
+			timesUnlimit.classList.add("option-select");
+		}
+		if (null !== optionsDays && MAX_INT !== optionsDays) {
+			if ("number" === typeof(optionsDays)) {
+				var dayNodes = document.querySelectorAll(".btnLimitDay");
+				for (var i = 0; i < dayNodes.length; i++) {
+					var node = dayNodes[i];
+					var v = node.className.match(/\d+/g);
+					if (v && v.length > 0) {
+						if (optionsDays === Number(v[0])) {
+							node.classList.remove("option-unselect");
+							node.classList.add("option-select");
+							//
+							var daysUnlimit = document.querySelector(".lmt-day-unlmt");
+							if (daysUnlimit) {
+								daysUnlimit.classList.remove("option-select");
+								daysUnlimit.classList.add("option-unselect");
+							}
+							//
+							break;
+						}
+					}
+				}
+			}
+		}
+		else if (null !== optionsTimes && MAX_INT !== optionsTimes) {
+			if ("number" === typeof(optionsTimes)) {
+				var timeNodes = document.querySelectorAll(".btnLimitTime");
+				for (var i = 0; i < timeNodes.length; i++) {
+					var node = timeNodes[i];
+					var v = node.className.match(/\d+/g);
+					if (v && v.length > 0) {
+						if (optionsTimes === Number(v[0])) {
+							node.classList.remove("option-unselect");
+							node.classList.add("option-select");
+							//
+							var timesUnlimit = document.querySelector(".lmt-time-unlmt");
+							if (timesUnlimit) {
+								timesUnlimit.classList.remove("option-select");
+								timesUnlimit.classList.add("option-unselect");
+							}
+							//
+							break;
+						}
+					}
+				}
 			}
 		}
 		// disable all buttons
@@ -1165,9 +1312,9 @@
 
 	function onDocumentMouseMove(e) {
 		if (g_mousedown) {
-			if (customObject) {
-				// customObject.Execute("dragcaption", g_lastX, g_lastY, "", "");
-				customObject.dragcaption(g_lastX, g_lastY);
+                        if (external) {
+                                // external.Execute("dragcaption", g_lastX, g_lastY, "", "");
+                                external.dragcaption(g_lastX, g_lastY);
 			}
 		}
 	}
@@ -1188,8 +1335,8 @@
 			tips.style.display = "none";
 		}
 		//
-		showBackground();
-		getToken(createLink);
+                showBackground();
+                getToken(createLink);
 	}
 
 	function onCancelCreate() {
@@ -1197,25 +1344,21 @@
 	}
 
 	function promptFirstTips() {
-		try {
-				//
-				var firstTips = external.getShareLinkFirstTips();
-				var content = document.querySelector("#content");
-				if (content) {
-					content.style.display = ("1" === firstTips) ? "" : "none";
-				}
-				//
-				var tips = document.querySelector("#first-tips");
-				if (tips) {
-					tips.style.display = ("1" === firstTips) ? "none" : "";
-				}				
-				if ("1" == firstTips) {
-					showBackground();
-					getToken(createLink);
-				}
-		}
-		catch (e) {
-		}
+            //
+            var firstTips = external.shareLinkFirstTips;
+            var content = document.querySelector("#content");
+            if (content) {
+                    content.style.display = ("1" === firstTips) ? "" : "none";
+            }
+            //
+            var tips = document.querySelector("#first-tips");
+            if (tips) {
+                    tips.style.display = ("1" === firstTips) ? "none" : "";
+            }
+            if ("1" == firstTips) {
+                    showBackground();
+                    getToken(createLink);
+            }
 	}
 
 	function onDocumentKeyUp (e) {
@@ -1225,10 +1368,9 @@
 	}
 
 	function initButtons() {
-		console.log("initButtons called");
 
 		document.addEventListener("mouseup", onDocumentMouseUp);
-		
+		//
 		var head = document.querySelector("#head");
 		if (head) {
 			head.addEventListener("mousedown", onHeadMouseDown);
@@ -1275,23 +1417,20 @@
 		}
 	}
 
-	function onLoad () {
+        function initForWebEngine () {
+                wizInitLang();
+
 		translatePage();
 		//
 
 		initButtons();
 		//
-		try {
-			promptFirstTips();
-		}
-		catch(e) {
-
-		}
+                promptFirstTips();
 	}
 
 	</script>
 </head>
-<body onload='onLoad();'>
+<body >
 	<div id='main'>
 		<div id='head'>
 			<div>
